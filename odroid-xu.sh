@@ -37,10 +37,10 @@ unset CROSS_COMPILE
 
 arm="abootimg cgpt fake-hwclock ntpdate u-boot-tools vboot-utils vboot-kernel-utils"
 base="e2fsprogs initramfs-tools kali-defaults kali-menu parted sudo usbutils"
-desktop="fonts-croscore fonts-crosextra-caladea fonts-crosextra-carlito gnome-theme-kali gtk3-engines-xfce kali-desktop-xfce kali-root-login lightdm network-manager network-manager-gnome xfce4 xserver-xorg-video-fbdev"
-tools="aircrack-ng ethtool hydra john libnfc-bin mfoc nmap passing-the-hash sqlmap usbutils winexe wireshark"
-services="apache2 openssh-server"
-extras="iceweasel xfce4-terminal wpasupplicant"
+desktop=""
+tools=""
+services="openssh-server"
+extras=""
 
 packages="${arm} ${base} ${desktop} ${tools} ${services} ${extras}"
 architecture="armhf"
@@ -127,6 +127,10 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get --yes --force-yes install $packages
 apt-get --yes --force-yes dist-upgrade
 apt-get --yes --force-yes autoremove
+
+echo "Making the image insecure"
+sed -i -e 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+update-rc.d ssh enable
 
 rm /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
